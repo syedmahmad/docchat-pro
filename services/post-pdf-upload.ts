@@ -4,7 +4,7 @@ import {
   UPLOAD_FIELD,
   UPLOAD_URL,
 } from "@/constants/pdf-upload";
-import { parseUploadResponseText } from "@/utils/parse-upload-response-text";
+import { parseUploadResponse } from "@/utils/parse-upload-response";
 
 export type PostPdfUploadResult =
   | { type: "success"; detail?: string }
@@ -15,7 +15,7 @@ const NETWORK_MESSAGE =
   "We could not reach the server. Check your connection and try again.";
 
 export const postPdfUpload = async (
-  file: File
+  file: File,
 ): Promise<PostPdfUploadResult> => {
   const body = new FormData();
   body.append(UPLOAD_FIELD, file);
@@ -26,13 +26,19 @@ export const postPdfUpload = async (
       responseType: "text",
     });
 
-    const detail = parseUploadResponseText(response.data ?? "");
+    const text = response.data ?? "";
+    const isSuccess = response.status >= 200 && response.status < 300;
+    const parsed = parseUploadResponse(text, isSuccess);
 
-    if (response.status < 200 || response.status >= 300) {
-      return { type: "http_error", status: response.status, detail };
+    if (!isSuccess) {
+      return {
+        type: "http_error",
+        status: response.status,
+        detail: parsed.errorMessage,
+      };
     }
 
-    return { type: "success", detail };
+    return { type: "success", detail: parsed.successDetail };
   } catch {
     return { type: "network_error", message: NETWORK_MESSAGE };
   }

@@ -46,7 +46,8 @@ export const usePdfUpload = () => {
       setState({
         status: "success",
         fileName: file.name,
-        detail: result.detail ?? "File uploaded successfully.",
+        detail:
+          result.detail ?? "Your PDF was uploaded and processed successfully.",
       });
     } finally {
       clearFileInput(inputRef.current);

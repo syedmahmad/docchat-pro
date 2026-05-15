@@ -96,7 +96,6 @@ export const PdfUpload: FC<PdfUploadProps> = ({ className }) => {
             dragActive={dragActive}
             uploadingFileName={uploadingFileName}
             onInputChange={onInputChange}
-            onOpenPicker={openFilePicker}
             onDrop={dropHandlers.onDrop}
             onDragOver={dropHandlers.onDragOver}
             onDragEnter={dropHandlers.onDragEnter}

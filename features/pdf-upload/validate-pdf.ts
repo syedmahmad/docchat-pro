@@ -1,21 +1,10 @@
 import { MAX_BYTES } from "@/constants/pdf-upload";
 import { formatBytes } from "@/utils/format-bytes";
+import { isPdfFile } from "@/utils/is-pdf-file";
 
 /** Returns a user-facing error message, or `null` if the file is acceptable. */
 export const validatePdf = (file: File): string | null => {
-  const lower = file.name.toLowerCase();
-  const hasPdfExtension = lower.endsWith(".pdf");
-  const mime = file.type;
-  const mimeOkWithPdfExtension =
-    mime === "application/pdf" ||
-    mime === "application/octet-stream" ||
-    mime === "";
-
-  const allowed =
-    mime === "application/pdf" ||
-    (hasPdfExtension && mimeOkWithPdfExtension);
-
-  if (!allowed) {
+  if (!isPdfFile(file)) {
     return "Only PDF files are supported.";
   }
   if (file.size > MAX_BYTES) {
