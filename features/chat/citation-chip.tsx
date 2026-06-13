@@ -27,12 +27,14 @@ export const CitationChip: FC<CitationChipProps> = ({ citation, onOpenPanel }) =
         onMouseLeave={() => setShowPopover(false)}
         onClick={() => onOpenPanel(citation)}
         className={cn(
-          "inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/60 px-2 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors",
+          "inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/60 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors",
           "hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
         )}
       >
+        <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full bg-primary/20 text-primary text-[9px] font-bold leading-none shrink-0">
+          {citation.id}
+        </span>
         <FileText className="size-3 shrink-0" />
-        <span>[{citation.id}]</span>
         <span>
           {label}
           {pageLabel}

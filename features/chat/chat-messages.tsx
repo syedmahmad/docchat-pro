@@ -6,6 +6,35 @@ import { cn } from "@/lib/utils";
 import type { ChatMessage, Citation } from "./use-chat-agent";
 import { CitationChip } from "./citation-chip";
 
+function renderWithInlineCitations(
+  content: string,
+  citations: Citation[],
+  onOpenPanel: (citation: Citation) => void
+) {
+  const parts = content.split(/(\[\d+\])/g);
+  return parts.map((part, i) => {
+    const match = part.match(/^\[(\d+)\]$/);
+    if (match) {
+      const id = parseInt(match[1], 10);
+      const citation = citations.find((c) => c.id === id);
+      if (citation) {
+        return (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onOpenPanel(citation)}
+            title={citation.filename}
+            className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary/20 text-primary text-[9px] font-bold mx-0.5 hover:bg-primary/40 transition-colors cursor-pointer align-super leading-none shrink-0"
+          >
+            {id}
+          </button>
+        );
+      }
+    }
+    return <span key={i}>{part}</span>;
+  });
+}
+
 interface ChatMessagesProps {
   messages: ChatMessage[];
   isLoading: boolean;
@@ -102,19 +131,28 @@ export const ChatMessages: FC<ChatMessagesProps> = ({ messages, isLoading, onOpe
                       )
                 )}
               >
-                {message.content || <TypingDots />}
+                {message.content
+                  ? !isUser && message.citations && message.citations.length > 0
+                    ? renderWithInlineCitations(message.content, message.citations, onOpenPanel)
+                    : message.content
+                  : <TypingDots />}
               </div>
 
-              {/* Citation chips — assistant messages only */}
+              {/* Sources section — assistant messages only */}
               {!isUser && message.citations && message.citations.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 px-1 pt-0.5">
-                  {message.citations.map((citation) => (
-                    <CitationChip
-                      key={citation.id}
-                      citation={citation}
-                      onOpenPanel={onOpenPanel}
-                    />
-                  ))}
+                <div className="px-1 pt-1 space-y-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/60">
+                    Sources
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {message.citations.map((citation) => (
+                      <CitationChip
+                        key={citation.id}
+                        citation={citation}
+                        onOpenPanel={onOpenPanel}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
 
