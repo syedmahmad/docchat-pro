@@ -14,6 +14,7 @@
 import * as React from "react";
 
 import { postUrlUpload } from "@/services/post-url-upload";
+import { rememberSource, saveActiveSource } from "@/utils/active-source";
 import type { UrlUploadState } from "@/types/url-upload";
 import { validateUrl } from "@/utils/validate-url";
 
@@ -74,7 +75,18 @@ export const useUrlUpload = () => {
       url,
       detail:
         result.detail ?? "The page was processed and saved successfully.",
+      sourceId: result.sourceId,
     });
+
+    if (result.sourceId) {
+      rememberSource({
+        sourceId: result.sourceId,
+        label: url,
+        kind: "url",
+        updatedAt: Date.now(),
+      });
+      saveActiveSource(result.sourceId, url);
+    }
 
     // Clear the input after a successful submission so the user can add another URL
     setInputValue("");

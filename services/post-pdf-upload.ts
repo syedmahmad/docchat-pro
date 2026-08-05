@@ -7,7 +7,7 @@ import {
 import { parseUploadResponse } from "@/utils/parse-upload-response";
 
 export type PostPdfUploadResult =
-  | { type: "success"; detail?: string }
+  | { type: "success"; detail?: string; sourceId?: string }
   | { type: "http_error"; status: number; detail?: string }
   | { type: "network_error"; message: string };
 
@@ -38,7 +38,11 @@ export const postPdfUpload = async (
       };
     }
 
-    return { type: "success", detail: parsed.successDetail };
+    return {
+      type: "success",
+      detail: parsed.successDetail,
+      sourceId: parsed.sourceId,
+    };
   } catch {
     return { type: "network_error", message: NETWORK_MESSAGE };
   }

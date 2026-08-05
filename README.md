@@ -87,6 +87,7 @@ create table documents (
 ```
 
 > The embedding dimension `768` matches `gemini-embedding-001`. Change it if you switch models.
+> Each ingested chunk stores a `source_id` inside `metadata` so chat can stay scoped to the active document.
 
 ### Create the semantic search function
 
@@ -94,7 +95,8 @@ create table documents (
 create or replace function match_documents(
   query_embedding vector(768),
   match_count     int     default 5,
-  match_threshold float   default 0.3
+  match_threshold float   default 0.3,
+  match_source_id text    default null
 )
 returns table (
   id         bigint,
@@ -113,6 +115,10 @@ begin
     1 - (documents.embedding <=> query_embedding) as similarity
   from documents
   where 1 - (documents.embedding <=> query_embedding) > match_threshold
+    and (
+      match_source_id is null
+      or documents.metadata ->> 'source_id' = match_source_id
+    )
   order by documents.embedding <=> query_embedding
   limit match_count;
 end;
@@ -141,9 +147,10 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## 5. Usage
 
-1. **Upload** — drag and drop a PDF (max 10 MB) on the home page and wait for the success message.
+1. **Upload** — drag and drop a PDF (max 4 MB, to stay under Vercel's 4.5 MB function payload limit) on the home page and wait for the success message.
 2. **Chat** — you are redirected to `/chat` automatically. Type any question about the document.
-3. **Citations** — each answer shows citation chips `[1] filename, p.4`. Hover a chip to preview the source chunk; click to open the full source panel.
+3. **Citations** — each answer shows citation chips `[1] filename, p.4`. Hover or focus a chip to preview the source chunk; click or tap to open the full source panel.
+4. **Scope** — the most recently uploaded document or URL becomes the active chat source and is remembered locally in your browser.
 
 ---
 

@@ -17,7 +17,7 @@ export const PdfUploadStatus: FC<PdfUploadStatusProps> = ({ state }) => {
     return (
       <Alert
         variant="destructive"
-        className="rounded-2xl border-destructive/40 bg-destructive/[0.06] backdrop-blur-md"
+        className="rounded-2xl border-destructive/40 bg-destructive/[0.06]"
       >
         <AlertCircle />
         <AlertTitle>Could not upload</AlertTitle>
@@ -31,7 +31,7 @@ export const PdfUploadStatus: FC<PdfUploadStatusProps> = ({ state }) => {
   if (state.status === "success") {
     return (
       <div className="flex flex-col gap-3">
-        <Alert className="rounded-2xl border-emerald-500/25 bg-emerald-500/[0.07] backdrop-blur-md shadow-[0_0_40px_-16px_rgba(16,185,129,0.35)] dark:border-emerald-400/20 dark:bg-emerald-500/[0.09] dark:shadow-[0_0_48px_-12px_rgba(52,211,153,0.25)]">
+        <Alert className="rounded-2xl border-emerald-500/25 bg-emerald-500/[0.07] shadow-[0_0_40px_-16px_rgba(16,185,129,0.28)] dark:border-emerald-400/20 dark:bg-emerald-500/[0.09] dark:shadow-[0_0_48px_-12px_rgba(52,211,153,0.2)]">
           <CheckCircle2 className="text-emerald-600 dark:text-emerald-400" />
           <AlertTitle>Upload complete</AlertTitle>
           <AlertDescription>

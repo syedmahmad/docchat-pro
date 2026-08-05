@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { postPdfUpload } from "@/services/post-pdf-upload";
+import { rememberSource, saveActiveSource } from "@/utils/active-source";
 import type { PdfUploadState } from "@/types/pdf-upload";
 
 import { validatePdf } from "./validate-pdf";
@@ -48,7 +49,18 @@ export const usePdfUpload = () => {
         fileName: file.name,
         detail:
           result.detail ?? "Your PDF was uploaded and processed successfully.",
+        sourceId: result.sourceId,
       });
+
+      if (result.sourceId) {
+        rememberSource({
+          sourceId: result.sourceId,
+          label: file.name,
+          kind: "pdf",
+          updatedAt: Date.now(),
+        });
+        saveActiveSource(result.sourceId, file.name);
+      }
     } finally {
       clearFileInput(inputRef.current);
     }

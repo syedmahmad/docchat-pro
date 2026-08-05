@@ -12,5 +12,5 @@
 export type UrlUploadState =
   | { status: "idle" }
   | { status: "submitting"; url: string }
-  | { status: "success"; url: string; detail?: string }
+  | { status: "success"; url: string; detail?: string; sourceId?: string }
   | { status: "error"; message: string };

@@ -26,37 +26,41 @@ export const ChatInput: FC<ChatInputProps> = ({ input, isLoading, onChange, onSu
   return (
     <form
       onSubmit={onSubmit}
-      className="flex items-end gap-3 border-t border-border/50 bg-background/80 px-4 py-3 backdrop-blur-md sm:px-6"
+      className="border-t border-border/50 bg-background/95 px-4 py-3 sm:px-6"
     >
-      <div className="relative flex flex-1 items-end rounded-2xl border border-border/60 bg-muted/40 px-4 py-2 transition-colors focus-within:border-primary/40 focus-within:bg-background">
+      <div className="flex items-end gap-3 rounded-[1.1rem] border border-border/60 bg-card px-4 py-3 shadow-[0_4px_16px_-8px_rgba(15,23,42,0.12)] transition-[border-color,box-shadow] focus-within:border-primary/35 focus-within:shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]">
         <textarea
           value={input}
           onChange={onChange}
           onKeyDown={handleKeyDown}
-          placeholder="Message DocChat AI…"
+          placeholder="Ask about this document…"
           rows={1}
           disabled={isLoading}
+          aria-label="Message"
           className={cn(
-            "w-full resize-none bg-transparent text-sm leading-relaxed outline-none placeholder:text-muted-foreground/60 disabled:opacity-50",
+            "min-h-[2.25rem] w-full resize-none bg-transparent text-[14px] leading-6 outline-none placeholder:text-muted-foreground/50 disabled:opacity-50",
             "max-h-32 overflow-y-auto"
           )}
           style={{ fieldSizing: "content" } as React.CSSProperties}
         />
-      </div>
 
-      <button
-        type="submit"
-        disabled={!canSend}
-        className={cn(
-          "flex size-10 shrink-0 items-center justify-center rounded-full transition-all duration-150",
-          canSend
-            ? "bg-primary text-primary-foreground shadow-md hover:scale-105 hover:shadow-lg active:scale-95"
-            : "bg-muted text-muted-foreground cursor-not-allowed"
-        )}
-      >
-        <Send className="size-4 translate-x-px" />
-        <span className="sr-only">Send</span>
-      </button>
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <button
+            type="submit"
+            disabled={!canSend}
+            aria-label="Send message"
+            className={cn(
+              "flex size-9 shrink-0 items-center justify-center rounded-xl border transition-[colors,transform,box-shadow] duration-150",
+              canSend
+                ? "border-primary/10 bg-primary text-primary-foreground shadow-[0_6px_18px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-0.5 hover:bg-primary/90 active:translate-y-0"
+                : "border-border/60 bg-muted text-muted-foreground cursor-not-allowed"
+            )}
+          >
+            <Send className="size-3.5" />
+          </button>
+          <p className="text-[10px] text-muted-foreground/50 select-none">⏎ send</p>
+        </div>
+      </div>
     </form>
   );
 };

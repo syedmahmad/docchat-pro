@@ -1,13 +1,20 @@
 import { TaskType } from "@google/generative-ai";
-import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-import { ChatGroq } from "@langchain/groq";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { createClient } from "@supabase/supabase-js";
+import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { ChatGroq } from "@langchain/groq";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 
 export const runtime = "nodejs";
+export const maxDuration = 30;
 
 type MatchedChunk = { content: string; metadata: Record<string, unknown>; similarity: number };
 type ChatMessage = { role: "user" | "assistant"; content: string };
+type AskAgentRequest = {
+  messages?: ChatMessage[];
+  sourceId?: string;
+};
+
+const MAX_HISTORY_MESSAGES = 8;
 
 function extractFilename(metadata: Record<string, unknown>): string {
   return (
@@ -34,9 +41,22 @@ function extractChunkIndex(metadata: Record<string, unknown>): number | null {
 
 export async function POST(request: Request) {
   try {
-    const { messages } = (await request.json()) as { messages: ChatMessage[] };
+    const { messages, sourceId } = (await request.json()) as AskAgentRequest;
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return Response.json({ error: "Conversation messages are required." }, { status: 400 });
+    }
+
     const lastMessage = messages.at(-1);
     const query = lastMessage?.role === "user" ? lastMessage.content : undefined;
+    const history = messages
+      .slice(0, -1)
+      .filter(
+        (message): message is ChatMessage =>
+          message != null &&
+          (message.role === "user" || message.role === "assistant") &&
+          typeof message.content === "string",
+      )
+      .slice(-MAX_HISTORY_MESSAGES);
 
     if (!query?.trim()) {
       return Response.json({ error: "Query is required." }, { status: 400 });
@@ -61,17 +81,50 @@ export async function POST(request: Request) {
 
     const queryEmbedding = await embeddings.embedQuery(query);
 
-    const { data: chunks, error: matchError } = await supabase.rpc("match_documents", {
+    const rpcArgs = {
       query_embedding: queryEmbedding,
       match_count: 5,
       match_threshold: 0.3,
-    });
+    } as const;
 
-    if (matchError) {
-      console.error("Supabase match error:", matchError.message);
+    const runMatchQuery = async (matchSourceId?: string) => {
+      const { data, error } = await supabase.rpc("match_documents", {
+        ...rpcArgs,
+        ...(matchSourceId ? { match_source_id: matchSourceId } : {}),
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return (data as MatchedChunk[]) ?? [];
+    };
+
+    const safeSourceId = typeof sourceId === "string" && sourceId.trim() ? sourceId.trim() : null;
+
+    let matchedChunks: MatchedChunk[] = [];
+
+    try {
+      matchedChunks = safeSourceId ? await runMatchQuery(safeSourceId) : await runMatchQuery();
+    } catch (matchError) {
+      if (safeSourceId) {
+        console.warn("Source-scoped match failed, retrying without source filter:", matchError);
+        matchedChunks = await runMatchQuery();
+      } else {
+        throw matchError;
+      }
     }
 
-    const matchedChunks = (chunks as MatchedChunk[]) ?? [];
+    if (safeSourceId && matchedChunks.length === 0) {
+      const { count, error: countError } = await supabase
+        .from("documents")
+        .select("id", { count: "exact", head: true })
+        .contains("metadata", { source_id: safeSourceId });
+
+      if (!countError && (count ?? 0) === 0) {
+        matchedChunks = await runMatchQuery();
+      }
+    }
 
     const citations = matchedChunks.map((c, i) => ({
       id: i + 1,
@@ -89,10 +142,17 @@ export async function POST(request: Request) {
       streaming: true,
     });
 
+    const historyMessages = history.map((message) =>
+      message.role === "user"
+        ? new HumanMessage(message.content)
+        : new AIMessage(message.content),
+    );
+
     const langchainMessages = [
       new SystemMessage(
-        `Answer the user's question using ONLY the context below. When you use information from the context, cite the source inline using bracket notation like [1], [2], etc. matching the reference numbers. You may use multiple citations. If the answer isn't in the context, say "I don't have that information."\n\nContext:\n${context || "No context available."}`
+        `Answer the user's question using ONLY the document context below. Use the conversation history only to resolve follow-up references like "it", "that page", or "the second item". When you use information from the context, cite the source inline using bracket notation like [1], [2], etc. matching the reference numbers. You may use multiple citations. If the answer isn't in the context, say "I don't have that information."\n\nDocument context:\n${context || "No context available."}`
       ),
+      ...historyMessages,
       new HumanMessage(query),
     ];
 

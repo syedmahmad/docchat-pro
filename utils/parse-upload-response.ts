@@ -1,6 +1,7 @@
 export type ParsedUploadResponse = {
   successDetail?: string;
   errorMessage?: string;
+  sourceId?: string;
 };
 
 /**
@@ -20,6 +21,7 @@ export const parseUploadResponse = (
       message?: unknown;
       pages?: unknown;
       chunks?: unknown;
+      sourceId?: unknown;
     };
 
     if (typeof json.error === "string") {
@@ -32,7 +34,8 @@ export const parseUploadResponse = (
       isSuccessStatus &&
       (typeof json.message === "string" ||
         typeof json.pages === "number" ||
-        typeof json.chunks === "number")
+        typeof json.chunks === "number" ||
+        typeof json.sourceId === "string")
     ) {
       const segments: string[] = [];
       if (typeof json.message === "string") segments.push(json.message);
@@ -46,7 +49,10 @@ export const parseUploadResponse = (
           `${json.chunks} section${json.chunks === 1 ? "" : "s"}`,
         );
       }
-      return { successDetail: segments.join(" · ") };
+      return {
+        successDetail: segments.join(" · "),
+        sourceId: typeof json.sourceId === "string" ? json.sourceId : undefined,
+      };
     }
 
     return {};

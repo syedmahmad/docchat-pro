@@ -21,7 +21,7 @@ import { parseUploadResponse } from "@/utils/parse-upload-response";
  * handle each case explicitly with a simple switch/if chain.
  */
 export type PostUrlUploadResult =
-  | { type: "success"; detail?: string }
+  | { type: "success"; detail?: string; sourceId?: string }
   | { type: "http_error"; status: number; detail?: string }
   | { type: "network_error"; message: string };
 
@@ -77,7 +77,11 @@ export const postUrlUpload = async (
     }
 
     // HTTP 2xx — ingestion succeeded
-    return { type: "success", detail: parsed.successDetail };
+    return {
+      type: "success",
+      detail: parsed.successDetail,
+      sourceId: parsed.sourceId,
+    };
   } catch {
     // axios only throws here when the network itself failed (DNS failure, timeout, CORS, etc.)
     // — NOT for HTTP error status codes because we set validateStatus above

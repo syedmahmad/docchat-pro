@@ -47,7 +47,7 @@ export const UrlUpload: FC<UrlUploadProps> = ({ className }) => {
     >
       {/* Soft radial bloom behind the card — subtle brand colour glow on hover */}
       <div
-        className="pointer-events-none absolute -inset-8 -z-10 rounded-[2rem] bg-[radial-gradient(ellipse_at_50%_0%,var(--color-primary)_0%,transparent_55%)] opacity-[0.07] blur-3xl transition-opacity duration-700 group-hover/shell:opacity-[0.12] dark:opacity-[0.11] dark:group-hover/shell:opacity-[0.18]"
+        className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-[radial-gradient(ellipse_at_50%_0%,var(--color-primary)_0%,transparent_58%)] opacity-[0.06] blur-2xl transition-opacity duration-700 group-hover/shell:opacity-[0.1] dark:opacity-[0.1] dark:group-hover/shell:opacity-[0.14]"
         aria-hidden
       />
 
@@ -60,14 +60,14 @@ export const UrlUpload: FC<UrlUploadProps> = ({ className }) => {
       <Card
         className={cn(
           // Glass-morphism card: semi-transparent background + large backdrop blur
-          "relative overflow-hidden rounded-[1.25rem] border-border/40 bg-card/60 shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_32px_64px_-32px_rgba(0,0,0,0.18)] backdrop-blur-2xl dark:bg-card/45 dark:shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_32px_80px_-28px_rgba(0,0,0,0.65)]",
-          // Animated diagonal shine sweep — uses the same keyframe as the PDF card
-          "before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(105deg,transparent_38%,rgba(255,255,255,0.12)_50%,transparent_62%)] before:bg-[length:220%_100%] before:animate-[pdf-upload-shine_5s_ease-in-out_infinite] dark:before:bg-[linear-gradient(105deg,transparent_38%,rgba(255,255,255,0.06)_50%,transparent_62%)]",
+          "relative overflow-hidden rounded-[1.25rem] border-border/40 bg-card/60 shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_24px_48px_-28px_rgba(0,0,0,0.14)] backdrop-blur-xl dark:bg-card/45 dark:shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_24px_56px_-24px_rgba(0,0,0,0.45)]",
+          // Keep the overlay static so the card doesn't animate continuously
+          "before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(105deg,transparent_40%,rgba(255,255,255,0.08)_50%,transparent_60%)] before:bg-[length:180%_100%] dark:before:bg-[linear-gradient(105deg,transparent_40%,rgba(255,255,255,0.05)_50%,transparent_60%)]",
         )}
       >
         {/* Decorative grid overlay — matches the PDF card for visual consistency */}
         <div
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.35] [mask-image:linear-gradient(to_bottom,black_25%,transparent)] dark:opacity-[0.22]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.24] [mask-image:linear-gradient(to_bottom,black_25%,transparent)] dark:opacity-[0.16]"
           aria-hidden
         />
 
@@ -75,7 +75,7 @@ export const UrlUpload: FC<UrlUploadProps> = ({ className }) => {
         <CardHeader className="relative space-y-3 border-b border-border/30 bg-gradient-to-b from-muted/25 to-transparent px-5 pb-6 pt-7 sm:px-7">
           <div className="flex flex-wrap items-center justify-between gap-2">
             {/* "URL" badge mirrors the "PDF" badge on the PDF card */}
-            <span className="inline-flex items-center rounded-full border border-border/60 bg-background/50 px-2.5 py-0.5 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+            <span className="inline-flex items-center rounded-full border border-border/60 bg-background/60 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
               URL
             </span>
             {/* Tells the user which protocol schemes are accepted */}

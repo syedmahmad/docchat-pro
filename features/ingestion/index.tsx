@@ -83,7 +83,7 @@ export const IngestionPanel = () => {
       {/* Soft radial bloom — a barely-visible primary-colour glow that
           brightens slightly when the user hovers over the card */}
       <div
-        className="pointer-events-none absolute -inset-8 -z-10 rounded-[2rem] bg-[radial-gradient(ellipse_at_50%_0%,var(--color-primary)_0%,transparent_55%)] opacity-[0.07] blur-3xl transition-opacity duration-700 group-hover/shell:opacity-[0.12] dark:opacity-[0.11] dark:group-hover/shell:opacity-[0.18]"
+        className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-[radial-gradient(ellipse_at_50%_0%,var(--color-primary)_0%,transparent_58%)] opacity-[0.06] blur-2xl transition-opacity duration-700 group-hover/shell:opacity-[0.1] dark:opacity-[0.1] dark:group-hover/shell:opacity-[0.14]"
         aria-hidden
       />
 
@@ -97,33 +97,32 @@ export const IngestionPanel = () => {
       <Card
         className={cn(
           // Glass-morphism base: semi-transparent background + large backdrop blur
-          "relative overflow-hidden rounded-[1.25rem] border-border/40 bg-card/60",
-          "shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_32px_64px_-32px_rgba(0,0,0,0.18)]",
-          "backdrop-blur-2xl",
+          "relative overflow-hidden rounded-[1.25rem] border-border/40 bg-card/75",
+          "shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_24px_48px_-24px_rgba(0,0,0,0.16)]",
+          "backdrop-blur-md",
           "dark:bg-card/45 dark:shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_32px_80px_-28px_rgba(0,0,0,0.65)]",
-          // Slow diagonal shine sweep — keeps the card feeling alive without being distracting
+          // Keep the overlay static so the card doesn't animate continuously
           "before:pointer-events-none before:absolute before:inset-0",
-          "before:bg-[linear-gradient(105deg,transparent_38%,rgba(255,255,255,0.12)_50%,transparent_62%)]",
-          "before:bg-[length:220%_100%] before:animate-[pdf-upload-shine_5s_ease-in-out_infinite]",
-          "dark:before:bg-[linear-gradient(105deg,transparent_38%,rgba(255,255,255,0.06)_50%,transparent_62%)]",
+          "before:bg-[linear-gradient(105deg,transparent_40%,rgba(255,255,255,0.08)_50%,transparent_60%)]",
+          "before:bg-[length:180%_100%]",
+          "dark:before:bg-[linear-gradient(105deg,transparent_40%,rgba(255,255,255,0.05)_50%,transparent_60%)]",
         )}
       >
         {/* Decorative grid overlay — fades out towards the bottom */}
         <div
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.35] [mask-image:linear-gradient(to_bottom,black_25%,transparent)] dark:opacity-[0.22]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.25] [mask-image:linear-gradient(to_bottom,black_25%,transparent)] dark:opacity-[0.16]"
           aria-hidden
         />
 
         {/* ── Card header: headline + tab switcher ─────────────────────── */}
-        <CardHeader className="relative space-y-5 border-b border-border/30 bg-gradient-to-b from-muted/25 to-transparent px-5 pb-5 pt-7 sm:px-7">
+        <CardHeader className="relative space-y-4 border-b border-border/30 bg-gradient-to-b from-primary/6 to-transparent px-5 pb-4 pt-5 sm:px-7">
 
-          {/* Hero headline — tells the user the purpose of the whole panel */}
-          <div className="space-y-1">
-            <h2 className="bg-gradient-to-br from-foreground via-foreground to-muted-foreground bg-clip-text text-2xl font-semibold tracking-tight text-transparent sm:text-[1.65rem]">
-              Add a knowledge source
+          <div className="space-y-0.5">
+            <h2 className="font-heading text-base font-semibold tracking-tight text-foreground">
+              Add a source
             </h2>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
-              Upload a document or paste a URL — then start chatting with it.
+            <p className="text-[13px] text-muted-foreground">
+              Upload a PDF or paste a URL — then chat with it instantly.
             </p>
           </div>
 
@@ -139,7 +138,7 @@ export const IngestionPanel = () => {
           <div
             role="tablist"
             aria-label="Ingestion method"
-            className="relative flex rounded-xl border border-border/40 bg-muted/50 p-1 backdrop-blur-sm"
+            className="relative flex rounded-2xl border border-border/40 bg-card/60 p-1 backdrop-blur-sm"
           >
             {/* Sliding active-tab indicator — moves via CSS transform, not left/margin,
                 so the animation runs on the compositor thread (no layout thrash) */}
