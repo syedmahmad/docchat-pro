@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   /** Keep PDF stack on Node; bundling often breaks pdfjs / pdf-parse in App Router. */
   serverExternalPackages: [
     "pdf-parse",
+    "@napi-rs/canvas",
     "pdfjs-dist",
     "@langchain/community",
     "@langchain/classic",

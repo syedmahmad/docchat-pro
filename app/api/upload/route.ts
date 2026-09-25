@@ -3,10 +3,10 @@ import { Document } from "@langchain/core/documents";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { createClient } from "@supabase/supabase-js";
-import { PDFParse } from "pdf-parse";
 import { NextResponse } from "next/server";
 
 import { MAX_BYTES } from "@/constants/pdf-upload";
+import { PDFParse } from "@/lib/pdf-parser";
 import { isPdfFile } from "@/utils/is-pdf-file";
 
 export const runtime = "nodejs";
