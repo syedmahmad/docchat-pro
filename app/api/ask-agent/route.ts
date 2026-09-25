@@ -138,7 +138,7 @@ export async function POST(request: Request) {
 
     const model = new ChatGroq({
       apiKey: groqApiKey,
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       streaming: true,
     });
 

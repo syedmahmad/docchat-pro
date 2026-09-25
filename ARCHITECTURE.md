@@ -204,7 +204,7 @@ User types question → hits Enter / Send button
 │       • Respond with "I don't have that           │
 │         information." if context is insufficient  │
 │                                                   │
-│     Model: llama-3.3-70b-versatile via Groq API   │
+│     Model: openai/gpt-oss-120b via Groq API       │
 └──────────────────────┬───────────────────────────┘
                        │
                        ▼

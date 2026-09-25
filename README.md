@@ -14,7 +14,7 @@ Chat with any PDF using semantic search and a streaming LLM. Upload a document, 
 | Package manager  | pnpm                                 |
 | Vector database  | Supabase (pgvector)                  |
 | Embeddings       | Google Gemini `gemini-embedding-001` |
-| LLM              | Groq `llama-3.3-70b-versatile`       |
+| LLM              | Groq `openai/gpt-oss-120b`           |
 | PDF parsing      | pdf-parse                            |
 | AI orchestration | LangChain                            |
 
